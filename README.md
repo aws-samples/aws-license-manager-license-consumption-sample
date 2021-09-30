@@ -4,7 +4,7 @@ AWS License Manager is a service that makes it easier for you to manage your sof
 
 This repository contains sample code from AWS License Manager. The python script provides a sample implementation for using AWS License Manager APIs. ISVs (Independent Software Vendors) can use this python sample as a ‘QUICKSTART’ and a working sample implementation for integrating their application with AWS License Manager.
 
-Prerequisites
+Prerequisites <br />
 You will likely require an AWS Account. If you haven't already done so, you will first require to:
 
 1. [Create an AWS account](https://aws.amazon.com/blogs/startups/how-to-get-started-on-aws-from-a-dead-standstill/)
