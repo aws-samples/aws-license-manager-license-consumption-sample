@@ -106,6 +106,7 @@ def main(command_line=None):
     # sign borrow license data. The algorithms are based on JWT standard and all
     # major languages has public libraries to verify signatures. For this sample,
     # we are using PyJwt
+    # Key should be created in the same region as license
     SignKey=create_cmk()
     print(f"Key Created: {SignKey}")
 
@@ -125,6 +126,7 @@ def main(command_line=None):
     # Borrowing a license. For real scenarios, it should be also accounted the
     # distribution and potential leaks. Use borrowing specifying and validating
     # NodeId if distribution is not safe.
+    # Key and checkoutborrow should happen in the same region
     signed_token=checkout_borrow_license(LicenseArn)["SignedToken"]
     print(f"Signed Token from CheckoutBorrowLicense: {signed_token}")
 
