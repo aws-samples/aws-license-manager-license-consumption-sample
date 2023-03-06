@@ -21,9 +21,13 @@ get_license_configuration
 
 Gets the specified license configuration. In this example, we are displaying the sample license configuration we have created in the previous step. This can be used in scenarios to check the properties of an existing license configuration.
 
+list_resource_inventory
+
+License Manager uses Systems Manager inventory to discover software usage on Amazon EC2 instances and on-premises instances. This sample lists the resources managed using Systems Manager inventory.  
+
 update_license_configuration
 
-License Manager uses Systems Manager inventory to discover software usage on Amazon EC2 instances and on-premises instances. You can add product information to your self-managed license, and License Manager will track the instances that have those products installed. Automated discovery can be added to a new license set, to an existing self-managed license, or resources in your inventory. Rules for automated discovery can be edited at any time through the CLI using the UpdateLicenseConfiguration API command (which is covered in the sample code). To edit rules in the console, you must delete the existing self-managed license and create a new one.
+You can add product information to your self-managed license, and License Manager will track the instances that have those products installed. Automated discovery can be added to a new license set, to an existing self-managed license, or resources in your inventory. Rules for automated discovery can be edited at any time through the CLI using the UpdateLicenseConfiguration API command (which is covered in the sample code). To edit rules in the console, you must delete the existing self-managed license and create a new one.
 
 To use automated discovery, you must add product information to your self-managed license. You can do so when you create the self-managed license using Inventory search. In this code sample we are adding new ProductInformationList to existing license configuration rule. 
 
