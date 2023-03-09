@@ -1,8 +1,8 @@
-## AWS License Manager Python Sample Code
+## AWS License Manager Sample Code
 
 AWS License Manager is a service that makes it easier for you to manage your software licenses from software vendors (such as Microsoft, SAP, Oracle, and IBM) centrally across AWS and your on-premises environments. This provides control and visibility into the usage of your licenses, and enables to limit licensing overages and reduce the risk of non-compliance or misreporting.
 
-This repository contains sample code from AWS License Manager. The python script provides a sample implementation for using AWS License Manager APIs. ISVs (Independent Software Vendors) can use this python sample as a ‘QUICKSTART’ and a working sample implementation for integrating their application with AWS License Manager.
+This repository contains sample code from AWS License Manager. The scripts provides a sample implementation for using AWS License Manager APIs. ISVs (Independent Software Vendors) can use these sample scripts as a ‘QUICKSTART’ and a working sample implementation for integrating their application with AWS License Manager.
 
 Prerequisites <br />
 You will likely require an AWS Account. If you haven't already done so, you will first require to:
