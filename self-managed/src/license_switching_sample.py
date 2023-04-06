@@ -38,7 +38,7 @@ def get_license_conversion_task_status(AccountId, LicenseConversionTaskId):
     )
     print('AWS License Manager - GetLicenseConfiguration API response:')
     pprint.pprint(response)
-    # Status message in the response provides more details on the Staus
+    # Status message in the response provides more details on the Status
     if ((response['Status'] == 'SUCCEEDED') or (response['Status'] == 'FAILED')):
         return True
     else: 
@@ -53,9 +53,16 @@ def convert_BYOL_to_license_included_for_all_resources():
     # https://docs.aws.amazon.com/license-manager/latest/APIReference/API_ListResourceInventory.html#licensemanager-ListResourceInventory-request-Filters 
     response = lm_client.list_resource_inventory(
             MaxResults=20,
+            Filters=[
+                {
+                    'Name': 'tag:samplekey',
+                    'Condition': 'EQUALS',
+                    'Value': 'samplevalue'
+                },
+            ]
         )
     
-    pending_conversion_tasks = []
+    pending_conversion_tasks = {}
     while True:
         print('AWS License Manager - ListResourceInventory API response:')
         pprint.pprint(response)
@@ -63,53 +70,29 @@ def convert_BYOL_to_license_included_for_all_resources():
             for resource in response['ResourceInventoryList']:
                 resource_arn = resource['ResourceArn']
                 account_id = resource_arn.split(':')[4]
-                converstion_task_response = create_license_conversion_task (account_id, resource_arn, 'RunInstances:0800', 'RunInstances:0002')
-                pending_conversion_tasks.append((account_id, converstion_task_response['LicenseConversionTaskId']))
-                pprint.pprint(converstion_task_response)
+                conversion_task_response = create_license_conversion_task (account_id, resource_arn, 'RunInstances:0800', 'RunInstances:0002')
+                pending_conversion_tasks[conversion_task_response['LicenseConversionTaskId']] = account_id
+                pprint.pprint(conversion_task_response)
         if "NextToken" in response:
             next_token = response['NextToken']
             response = lm_client.list_resource_inventory(
                 NextToken=next_token,
+                Filters=[
+                    {
+                        'Name': 'tag:samplekey',
+                        'Condition': 'EQUALS',
+                        'Value': 'samplevalue'
+                    },
+                ]
             )
         else:
             break
-    while len(pending_conversion_tasks) != 0: 
-        for task in pending_conversion_tasks:
-            task_completed = get_license_conversion_task_status(task[0], task[1])
+    while pending_conversion_tasks: 
+        for task_id, account_id in pending_conversion_tasks.items():
+            task_completed = get_license_conversion_task_status(account_id, task_id)
             if task_completed == True: 
-                pending_conversion_tasks.remove(task)
+                del pending_conversion_tasks[task_id]
     return
-    
-# Sample function to convert Windows Server from LI to BYOL
-def convert_LI_to_BYOL_for_all_resources():
-    lm_client = get_client(default_region)
-    response = lm_client.list_resource_inventory(
-            MaxResults=20,
-        )
-    pending_conversion_tasks = []
-    while True:
-        print('AWS License Manager - ListResourceInventory API response:')
-        pprint.pprint(response)
-        if "ResourceInventoryList" in response:
-            for resource in response['ResourceInventoryList']:
-                resource_arn = resource['ResourceArn']
-                account_id = resource_arn.split(':')[4]
-                converstion_task_response = create_license_conversion_task (account_id, resource_arn, 'RunInstances:0002', 'RunInstances:0800')
-                pending_conversion_tasks.append((account_id, converstion_task_response['LicenseConversionTaskId']))
-                pprint.pprint(converstion_task_response)
-        if "NextToken" in response:
-            next_token = response['NextToken']
-            response = lm_client.list_resource_inventory(
-                NextToken=next_token,
-            )
-        else: 
-            break
-    while len(pending_conversion_tasks) != 0: 
-        for task in pending_conversion_tasks:
-            task_completed = get_license_conversion_task_status(task[0], task[1])
-            if task_completed == True: 
-                pending_conversion_tasks.remove(task)
-    return True
 
 def get_client(Region):
     return boto3.client('license-manager', Region)
@@ -130,9 +113,6 @@ def main(command_line=None):
     
     # Convert BYOL to license included (LI) for all windows resources in the AWS Organization
     convert_BYOL_to_license_included_for_all_resources()
-    
-    # Convert LI to BYOL for all windows resources in the AWS Organization
-    convert_LI_to_BYOL_for_all_resources()
     
     # For other type of suppoerted conversions please visit: https://docs.aws.amazon.com/license-manager/latest/userguide/conversion-types.html
     
